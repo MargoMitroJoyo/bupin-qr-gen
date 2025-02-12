@@ -4,14 +4,17 @@ import { zValidator } from "@hono/zod-validator"
 import { z } from "zod"
 import { createCanvas, registerFont } from "canvas"
 
-registerFont("./assets/fonts/Poppins-Medium.ttf", { family: "Poppins", weight: "500" })
+registerFont("./assets/fonts/Poppins-SemiBold.ttf", { family: "Poppins", weight: "600" })
 
 const factory = createFactory()
 
 export const getQRImage = factory.createHandlers(
-  zValidator("param", z.object({
-    id: z.string(),
-  })),
+  zValidator(
+    "param",
+    z.object({
+      id: z.string(),
+    })
+  ),
   zValidator(
     "query",
     z.object({
@@ -36,8 +39,8 @@ export const getQRImage = factory.createHandlers(
       })
 
       const rectMargin = 13
-      const rectWidth = 125
-      const rectHeight = 35
+      const rectWidth = 145
+      const rectHeight = 39
 
       ctx.clearRect(
         canvas.width - rectWidth - rectMargin,
@@ -47,20 +50,17 @@ export const getQRImage = factory.createHandlers(
       )
 
       ctx.fillStyle = "black"
-      ctx.font = "500 30px Poppins"
+      ctx.font = "600 35px Poppins"
       ctx.textAlign = "center"
       ctx.textBaseline = "middle"
 
       const textX = canvas.width - rectWidth - rectMargin + rectWidth / 2
-      const textY = canvas.height - rectHeight - rectMargin + rectHeight / 2
+      const textY = canvas.height - rectHeight - rectMargin + rectHeight / 2 - 3
 
-      ctx.fillStyle = "white"
-      const shadowOffset = 2
+      ctx.lineWidth = 3
 
-      ctx.fillText("bupin.id", textX + shadowOffset, textY + shadowOffset)
-      ctx.fillText("bupin.id", textX - shadowOffset, textY + shadowOffset)
-      ctx.fillText("bupin.id", textX + shadowOffset, textY - shadowOffset)
-      ctx.fillText("bupin.id", textX - shadowOffset, textY - shadowOffset)
+      ctx.strokeStyle = "white"
+      ctx.strokeText("bupin.id", textX, textY)
 
       ctx.fillStyle = "black"
       ctx.fillText("bupin.id", textX, textY)
