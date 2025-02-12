@@ -20,13 +20,10 @@ export const getQRImage = factory.createHandlers(
     })
   ),
   async (c) => {
-    const url = `https://buku.bupin.id/?${c.req.param("id")}`
+    const id = c.req.param("id")
     const format = c.req.query("format") || "png"
     const detail = c.req.query("detail") || "high"
-
-    if (!url) {
-      return c.text("Missing required query parameter 'url'", 400)
-    }
+    const url = `https://buku.bupin.id/?${id}`
 
     try {
       const canvas = createCanvas(512, 512)
@@ -70,18 +67,22 @@ export const getQRImage = factory.createHandlers(
 
       let buffer
       let contentType
+      let fileName
 
       if (format === "jpeg") {
         buffer = canvas.toBuffer("image/jpeg")
         contentType = "image/jpeg"
+        fileName = `${id}.jpg`
       } else {
         buffer = canvas.toBuffer("image/png")
         contentType = "image/png"
+        fileName = `${id}.png`
       }
 
       return c.body(buffer, {
         headers: {
           "Content-Type": contentType,
+          "Content-Disposition": `inline; filename="${fileName}"`,
         },
       })
     } catch (error) {
