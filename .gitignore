@@ -1,0 +1,12 @@
+# deps
+node_modules/
+
+# build
+dist/
+
+# logs
+logs/
+
+# misc
+.DS_Store
+.env
