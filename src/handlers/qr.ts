@@ -3,6 +3,7 @@ import { QRCodeErrorCorrectionLevel, toCanvas } from "qrcode"
 import { zValidator } from "@hono/zod-validator"
 import { z } from "zod"
 import { createCanvas, registerFont } from "canvas"
+import { getFileName } from "../utils"
 
 registerFont("./assets/fonts/Poppins-SemiBold.ttf", { family: "Poppins", weight: "600" })
 
@@ -12,7 +13,7 @@ export const getQRImage = factory.createHandlers(
   zValidator(
     "param",
     z.object({
-      id: z.string(),
+      id: z.string().startsWith("UJN-").or(z.string().startsWith("VID-")),
     })
   ),
   zValidator(
@@ -27,6 +28,12 @@ export const getQRImage = factory.createHandlers(
     const format = c.req.query("format") || "png"
     const detail = c.req.query("detail") || "high"
     const url = `https://buku.bupin.id/?${id}`
+
+    const fileNameFromInfo = await getFileName(id as string)
+
+    if (!fileNameFromInfo) {
+      return c.text("QR code not found.", 404)
+    }
 
     try {
       const canvas = createCanvas(512, 512)
@@ -65,19 +72,9 @@ export const getQRImage = factory.createHandlers(
       ctx.fillStyle = "black"
       ctx.fillText("bupin.id", textX, textY)
 
-      let buffer
-      let contentType
-      let fileName
-
-      if (format === "jpeg") {
-        buffer = canvas.toBuffer("image/jpeg")
-        contentType = "image/jpeg"
-        fileName = `${id}.jpg`
-      } else {
-        buffer = canvas.toBuffer("image/png")
-        contentType = "image/png"
-        fileName = `${id}.png`
-      }
+      const buffer = format === "jpeg" ? canvas.toBuffer("image/jpeg") : canvas.toBuffer("image/png")
+      const contentType = `image/${format}`
+      const fileName = `${fileNameFromInfo}.${format === "jpeg" ? "jpg" : "png"}`
 
       return c.body(buffer, {
         headers: {
