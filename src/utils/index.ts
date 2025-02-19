@@ -1,3 +1,4 @@
+import { prisma } from "../lib/db"
 import { InfoUJN, InfoVID } from "../types"
 
 /**
@@ -8,13 +9,58 @@ import { InfoUJN, InfoVID } from "../types"
  * @throws {Error} - Throws an error if the data fetching fails.
  */
 export async function fetchInfoUJN(qrcode: string): Promise<InfoUJN> {
-  const data = await fetch(`https://buku.bupin.id/api/ujn.php?${qrcode}`)
+  const info = await prisma.qrujian.findFirst({
+    where: {
+      kodeQRUjian: qrcode,
+    },
+    select: {
+      kodeQRUjian: true,
+      id_ujian: true,
+      idJenjang: true,
+      idKelas: true,
+      idMapel: true,
+      idBab: true,
+      jenjang: {
+        select: {
+          namaJenjang: true,
+        },
+      },
+      kelas: {
+        select: {
+          namaKelas: true,
+        },
+      },
+      mapel: {
+        select: {
+          namaMapel: true,
+        },
+      },
+      bab: {
+        select: {
+          namaBab: true,
+        },
+      },
+    },
+  })
 
-  if (!data.ok) {
+  if (!info) {
     throw new Error("Failed to fetch data")
   }
 
-  return await data.json()
+  const data: InfoUJN = {
+    kodeQRUjian: info.kodeQRUjian,
+    idUjian: info.id_ujian,
+    idJenjang: info.idJenjang,
+    idKelas: info.idKelas,
+    idMapel: info.idMapel,
+    idBab: info.idBab,
+    namaJenjang: info.jenjang.namaJenjang,
+    namaKelas: info.kelas.namaKelas,
+    namaBab: info.bab.namaBab,
+    namaMapel: info.mapel.namaMapel,
+  }
+
+  return data
 }
 
 /**
@@ -25,13 +71,68 @@ export async function fetchInfoUJN(qrcode: string): Promise<InfoUJN> {
  * @throws {Error} If the fetch operation fails.
  */
 export async function fetchInfoVID(qrcode: string): Promise<InfoVID> {
-  const data = await fetch(`https://buku.bupin.id/api/vid.php?${qrcode}`)
+  const info = await prisma.qrvap.findFirst({
+    where: {
+      kodeQR: qrcode,
+    },
+    select: {
+      kodeQR: true,
+      idKelas: true,
+      idMapel: true,
+      idBab: true,
+      idSubBab: true,
+      tp: true,
+      jenjang: {
+        select: {
+          namaJenjang: true,
+        },
+      },
+      kelas: {
+        select: {
+          namaKelas: true,
+        },
+      },
+      mapel: {
+        select: {
+          namaMapel: true,
+        },
+      },
+      bab: {
+        select: {
+          namaBab: true,
+        },
+      },
+      subbab: {
+        select: {
+          namaSubBab: true,
+        },
+      },
+    },
+  })
 
-  if (!data.ok) {
+  if (!info) {
     throw new Error("Failed to fetch data")
   }
 
-  return await data.json()
+  const data: InfoVID = {
+    kode_qr: info.kodeQR,
+    nama_jenjang: info.jenjang.namaJenjang,
+    nama_kelas: info.kelas.namaKelas,
+    nama_mapel: info.mapel.namaMapel,
+    nama_bab: info.bab.namaBab,
+    nama_sub_bab: info.subbab.namaSubBab,
+    id_kelas: info.idKelas,
+    id_mapel: info.idMapel,
+    id_bab: info.idBab,
+    id_sub_bab: info.idSubBab,
+    link_video: "",
+    ytid: "",
+    link_dmp: null,
+    ytid_dmp: null,
+    tp: "",
+  }
+
+  return data
 }
 
 /**
@@ -106,6 +207,24 @@ export function getBab(inputString: string): string {
   return `${type} ${match[1]}`
 }
 
+export function getSubBab(inputString: string): string {
+  const regex = /[A-Z]\./
+
+  if (inputString.includes("AKM")) {
+    return "AKM"
+  } else if (inputString.includes("P3")) {
+    return "P3"
+  }
+
+  const match = inputString.toUpperCase().match(regex)
+
+  if (!match) {
+    return inputString
+  }
+
+  return `SUBBAB ${match[0].replace(".", "")}`
+}
+
 /**
  * Retrieves the file name based on the provided QR code.
  *
@@ -136,8 +255,9 @@ export async function getFileName(qrcode: string): Promise<string> {
       const kurikulum = getKurikulum(info.nama_jenjang)
       const mapel = info.nama_mapel
       const bab = getBab(info.nama_bab)
+      const subbab = getSubBab(info.nama_sub_bab)
 
-      return `${kelas} - ${kurikulum} - ${mapel} - ${bab} - ${qrcode}`
+      return `${kelas} - ${kurikulum} - ${mapel} - ${bab} - ${subbab} - ${qrcode}`
     }
   } catch (error) {
     console.error(error)
