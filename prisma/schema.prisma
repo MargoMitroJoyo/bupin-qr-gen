@@ -1,0 +1,1238 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model admin {
+  username String? @db.Text
+  password String? @db.Text
+
+  @@ignore
+}
+
+model bab {
+  idBab      Int       @id @default(autoincrement())
+  idJenjang  String    @db.VarChar(50)
+  idKelas    String    @db.VarChar(30)
+  idMapel    String    @db.VarChar(50)
+  namaBab    String    @db.LongText
+  idUser     Int
+  created_at String    @db.VarChar(30)
+  updated_at String    @db.VarChar(30)
+  deleted_at String    @db.VarChar(30)
+  status     Int
+  tp         String    @db.VarChar(30)
+  qrujian    qrujian[]
+  qrvap      qrvap[]
+}
+
+model babbudig {
+  idBab      Int    @id @default(autoincrement())
+  idJenjang  String @db.VarChar(50)
+  idKelas    String @db.VarChar(30)
+  idMapel    String @db.VarChar(50)
+  namaBab    String @db.LongText
+  idUser     Int
+  created_at String @db.VarChar(30)
+  updated_at String @db.VarChar(30)
+  deleted_at String @db.VarChar(30)
+  status     Int
+  tp         String @db.VarChar(30)
+}
+
+model banksoal {
+  idBab       Int      @id @default(autoincrement())
+  kode        String   @default("0") @db.VarChar(255)
+  idpk        String   @db.VarChar(255)
+  idguru      String   @db.VarChar(3)
+  nama        String   @db.VarChar(50)
+  jml_soal    Int
+  jml_esai    Int      @default(0)
+  tampil_pg   Int
+  tampil_esai Int      @default(0)
+  bobot_pg    Int
+  bobot_esai  Int      @default(0)
+  level       String   @db.VarChar(5)
+  opsi        Int
+  kelas       String   @db.VarChar(255)
+  date        DateTime @default(now()) @db.Timestamp(0)
+  status      String   @db.VarChar(2)
+  kkm         Int?
+  soal_agama  String?  @db.VarChar(50)
+}
+
+model banner {
+  id_gambar Int     @id @default(autoincrement())
+  gambar    String? @db.VarChar(100)
+  tgl_awal  String  @db.VarChar(20)
+  tgl_akhir String  @db.VarChar(20)
+  status    Int
+  message   String  @db.VarChar(200)
+}
+
+model berita {
+  idBerita      Int    @id @default(autoincrement())
+  judul_berita  String @db.LongText
+  isi_berita    String @db.LongText
+  tgl_berita    String @db.VarChar(30)
+  sumber_berita String @db.LongText
+  status_berita String @db.VarChar(2)
+  gambar_berita String @db.LongText
+  kategori      String @db.VarChar(2)
+  linkVideo     String @db.LongText
+  asetberita    String @db.LongText
+}
+
+model bukudigital {
+  idBukuDigital   Int    @id @default(autoincrement())
+  idJenjang       String @db.VarChar(50)
+  idKelas         String @db.VarChar(50)
+  idMapel         String @db.VarChar(50)
+  idBab           String @db.VarChar(50)
+  namaBukuDigital String @db.LongText
+  fileBukuDigital String @db.VarChar(225)
+  idUser          String @db.VarChar(30)
+  created_at      String @db.VarChar(30)
+  updated_at      String @db.VarChar(30)
+  deleted_at      String @db.VarChar(30)
+  status          Int
+  tp              String @db.VarChar(30)
+  cover           String @db.VarChar(225)
+}
+
+model bukuliterasi {
+  idBuku Int    @id @default(autoincrement())
+  judul  String @db.LongText
+  cover  String @db.LongText
+  isi    String @db.LongText
+  status Int
+}
+
+model bukunontext {
+  idBunon Int    @id @default(autoincrement())
+  judul   String @db.LongText
+  isi     String @db.LongText
+  cover   String @db.LongText
+  pdf     String @db.LongText
+  status  Int
+  idBuku  String @db.VarChar(30)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model config {
+  ID  String? @db.VarChar(500)
+  KEY String? @db.VarChar(500)
+
+  @@ignore
+}
+
+model counting_ils {
+  id_count_ils Int    @id @default(autoincrement())
+  jumlah       String @db.VarChar(30)
+  kodeQRIlus   String @db.VarChar(200)
+  tanggal      String @db.VarChar(30)
+  tps          String @db.VarChar(30)
+  ipc          String @db.VarChar(200)
+  idJenjang    String @db.VarChar(30)
+  idKelas      String @db.VarChar(30)
+  idMapel      String @db.VarChar(30)
+  bulan        String @db.VarChar(30)
+}
+
+model counting_ujian {
+  id_count_ujian Int    @id @default(autoincrement())
+  jumlah         String @db.VarChar(30)
+  kodeQRUjian    String @db.VarChar(200)
+  tanggal        String @db.VarChar(30)
+  tps            String @db.VarChar(30)
+  ipc            String @db.VarChar(200)
+  idJenjang      String @db.VarChar(30)
+  idKelas        String @db.VarChar(30)
+  idMapel        String @db.VarChar(30)
+  bulan          String @db.VarChar(10)
+}
+
+model counting_ujian_akm {
+  id_count_ujian_akm Int    @id @default(autoincrement())
+  jumlah             String @db.VarChar(30)
+  kodeQRUjianAKM     String @db.VarChar(200)
+  tanggal            String @db.VarChar(30)
+  tps                String @db.VarChar(30)
+  ipc                String @db.VarChar(200)
+}
+
+model counting_ujian_asesmen {
+  id_count_ujian_asesmen Int    @id @default(autoincrement())
+  jumlah                 String @db.VarChar(30)
+  kodeQRUjianAsesmen     String @db.VarChar(200)
+  tanggal                String @db.VarChar(30)
+  tps                    String @db.VarChar(30)
+  ipc                    String @db.VarChar(200)
+}
+
+model counting_ujian_sd {
+  id_count_ujian_sd Int    @id @default(autoincrement())
+  jumlah            String @db.VarChar(30)
+  kodeQRUjianSD     String @db.VarChar(200)
+  tanggal           String @db.VarChar(30)
+  tps               String @db.VarChar(30)
+  ipc               String @db.VarChar(200)
+}
+
+model counting_ujian_sma {
+  id_count_ujian_sma Int    @id @default(autoincrement())
+  jumlah             String @db.VarChar(30)
+  kodeQRUjianSMA     String @db.VarChar(200)
+  tanggal            String @db.VarChar(30)
+  tps                String @db.VarChar(30)
+  ipc                String @db.VarChar(200)
+}
+
+model counting_ujian_smp {
+  id_count_ujian_smp Int    @id @default(autoincrement())
+  jumlah             String @db.VarChar(30)
+  kodeQRUjianSMP     String @db.VarChar(200)
+  tanggal            String @db.VarChar(30)
+  tps                String @db.VarChar(30)
+  ipc                String @db.VarChar(200)
+}
+
+model counting_vap {
+  id_count_vap Int    @id @default(autoincrement())
+  jumlah       String @db.VarChar(30)
+  kodeQR       String @db.VarChar(200)
+  tanggal      String @db.VarChar(30)
+  tps          String @db.VarChar(30)
+  ipc          String @db.VarChar(200)
+  idJenjang    String @db.VarChar(30)
+  idKelas      String @db.VarChar(30)
+  idMapel      String @db.VarChar(30)
+  bulan        String @db.VarChar(30)
+}
+
+model counting_vjj {
+  id_count_vjj Int    @id @default(autoincrement())
+  jumlah       String @db.VarChar(30)
+  kodeQRJJ     String @db.VarChar(200)
+  tanggal      String @db.VarChar(30)
+  tps          String @db.VarChar(30)
+  ipc          String @db.VarChar(200)
+  idJenjang    String @db.VarChar(30)
+  idKelas      String @db.VarChar(30)
+  idMapel      String @db.VarChar(30)
+  bulan        String @db.VarChar(30)
+}
+
+model file_pendukung {
+  id_file     Int     @id @default(autoincrement())
+  idBab       String? @default("0") @db.VarChar(11)
+  nama_file   String? @db.VarChar(50)
+  status_file Int?
+}
+
+model fitbek {
+  id_fitbek Int    @id @default(autoincrement())
+  email     String @db.LongText
+  wa        String @db.VarChar(30)
+  isi       String @db.LongText
+  tgl       String @db.VarChar(30)
+}
+
+model gambarcbt {
+  idG         Int    @id @default(autoincrement())
+  link_gambar String @db.LongText
+}
+
+model gambarcbtsma {
+  idG         Int    @id @default(autoincrement())
+  link_gambar String @db.LongText
+}
+
+model gambarcbtsmp {
+  idG         Int    @id @default(autoincrement())
+  link_gambar String @db.LongText
+}
+
+model game {
+  idgame    Int    @id @default(autoincrement())
+  nama      String @db.LongText
+  linkgame  String @db.LongText
+  aset      String @db.LongText
+  idJenjang String @db.VarChar(30)
+  idKelas   String @db.VarChar(30)
+  idMapel   String @db.VarChar(30)
+  idBab     String @db.VarChar(30)
+  stsGame   Int    @default(1)
+  grup_id   String @db.VarChar(5)
+}
+
+model gamenew {
+  idgame         Int    @id @default(autoincrement())
+  nama           String @db.LongText
+  linkgame       String @db.LongText
+  aset           String @db.LongText
+  idJenjang      String @db.VarChar(30)
+  idKelas        String @db.VarChar(30)
+  idMapel        String @db.VarChar(30)
+  idBab          String @db.VarChar(30)
+  stsGame        Int    @default(1)
+  grup_id        String @db.VarChar(10)
+  start_date     String @db.VarChar(100)
+  end_date       String @db.VarChar(100)
+  urutan_game    String @db.VarChar(30)
+  deskripsi_game String @db.LongText
+}
+
+model ilustrasi {
+  idIlustrasi   Int    @id @default(autoincrement())
+  idJenjang     String @db.VarChar(50)
+  idKelas       String @db.VarChar(50)
+  idMapel       String @db.VarChar(50)
+  idBab         String @db.VarChar(50)
+  namaIlustrasi String @db.LongText
+  fileIlustrasi String @db.VarChar(225)
+  idUser        String @db.VarChar(30)
+  created_at    String @db.VarChar(30)
+  updated_at    String @db.VarChar(30)
+  deleted_at    String @db.VarChar(30)
+  status        Int
+  tp            String @db.VarChar(30)
+}
+
+model ilustrasi__lama {
+  idIlustrasi   Int    @id @default(autoincrement())
+  idQRIlus      String @db.VarChar(225)
+  namaIlustrasi String @db.VarChar(225)
+  fileIlustrasi String @db.VarChar(225)
+  idUser        Int
+  tglIlustrasi  String @db.VarChar(50)
+  idBab         String @db.VarChar(30)
+  idJenjang     String @db.VarChar(30)
+  idMapel       String @db.VarChar(30)
+  idKelas       String @db.VarChar(30)
+
+  @@map("ilustrasi--lama")
+}
+
+model info_pemenang {
+  idInfoP       Int    @id @default(autoincrement())
+  judul_info    String @db.VarChar(100)
+  isi_info      String @db.LongText
+  tgl_info      String @db.VarChar(100)
+  sumber_info   String @db.VarChar(100)
+  status_info   Int
+  aset_info     String @db.LongText
+  nama_pemenang String @db.VarChar(100)
+  asal_sekolah  String @db.VarChar(100)
+  jenjang       String @db.VarChar(100)
+}
+
+model jawaban {
+  id_jawaban Int     @id @default(autoincrement())
+  id_siswa   Int
+  idBab      Int
+  id_soal    Int
+  id_ujian   Int
+  jawaban    String? @db.Char(1)
+  jawabx     String? @db.Char(1)
+  jenis      Int
+  esai       String? @db.Text
+  nilai_esai Int     @default(0)
+  ragu       Int     @default(0)
+}
+
+model jenjang {
+  idJenjang   Int       @id @default(autoincrement())
+  namaJenjang String    @db.VarChar(40)
+  qrujian     qrujian[]
+  qrvap       qrvap[]
+}
+
+model jenjangbudig {
+  idJenjang   Int    @id @default(autoincrement())
+  namaJenjang String @db.VarChar(40)
+}
+
+model kabupaten {
+  id_kab   String @id @db.Char(4)
+  id_prov  String @db.Char(2)
+  nama     String @db.TinyText
+  id_jenis Int
+}
+
+model kecamatan {
+  id_kec String @id @db.Char(6)
+  id_kab String @db.Char(4)
+  nama   String @db.TinyText
+}
+
+model kelas {
+  idKelas   Int       @id @default(autoincrement())
+  idJenjang String    @db.VarChar(30)
+  namaKelas String    @db.VarChar(30)
+  qrujian   qrujian[]
+  qrvap     qrvap[]
+}
+
+model kelasbudig {
+  idKelas   Int    @id @default(autoincrement())
+  idJenjang String @db.VarChar(30)
+  namaKelas String @db.VarChar(30)
+}
+
+model kelurahan {
+  id_kel   String  @id @db.Char(10)
+  id_kec   String? @db.Char(6)
+  nama     String? @db.TinyText
+  id_jenis Int
+}
+
+model kurikulum {
+  idKur   Int    @id @default(autoincrement())
+  namaKur String @db.VarChar(50)
+}
+
+model level {
+  idLevel Int    @id @default(autoincrement())
+  level   String @db.VarChar(30)
+}
+
+model log_game {
+  idlog    Int    @id @default(autoincrement())
+  id_user  String @db.VarChar(200)
+  status   String @db.VarChar(200)
+  jmlakses String @db.VarChar(20)
+}
+
+model lokasinew {
+  idLokasi Int     @id @default(autoincrement())
+  idpolda  Int
+  idpolres Int
+  idpolsek Int
+  iddesa   Int
+  desa     String  @db.VarChar(255)
+  latlong  String  @db.LongText
+  namagk   String  @db.VarChar(225)
+  nilai    String  @db.VarChar(30)
+  warna    String  @db.VarChar(30)
+  af_gn    Decimal @db.Decimal(10, 0)
+  status   String  @db.VarChar(50)
+}
+
+model mapel {
+  idMapel   Int       @id @default(autoincrement())
+  idJenjang String    @db.VarChar(30)
+  idKelas   String    @db.VarChar(30)
+  namaMapel String    @db.VarChar(50)
+  qrujian   qrujian[]
+  qrvap     qrvap[]
+}
+
+model mapelbudig {
+  idMapel   Int    @id @default(autoincrement())
+  idJenjang String @db.VarChar(30)
+  idKelas   String @db.VarChar(30)
+  idKur     String @db.VarChar(50)
+  namaMapel String @db.VarChar(50)
+  status    Int    @default(1)
+}
+
+model masterlokasinew {
+  idLokasi Int     @id @default(autoincrement())
+  idpolda  Int
+  idpolres Int
+  idpolsek Int
+  iddesa   Int
+  desa     String  @db.VarChar(255)
+  latlong  String  @db.LongText
+  namagk   String  @db.VarChar(225)
+  nilai    String  @db.VarChar(30)
+  warna    String  @db.VarChar(30)
+  af_gn    Decimal @db.Decimal(10, 0)
+  status   String  @db.VarChar(50)
+}
+
+model materi {
+  idMateri      Int    @id @default(autoincrement())
+  idMapel       String @db.VarChar(30)
+  namaBab       String @db.VarChar(225)
+  namaSubBab    String @db.VarChar(225)
+  namaSubMateri String @db.VarChar(225)
+  link          String @db.LongText
+  kodeBC        String @db.VarChar(225)
+  idLogin       String @db.VarChar(30)
+}
+
+model minikuis {
+  idMiniKuis Int    @id @default(autoincrement())
+  idSiker    String @db.VarChar(225)
+  idVideoDmp String @db.VarChar(225)
+  kunci      String @db.VarChar(50)
+}
+
+model minikuispancasila {
+  idMiniKuisPancasila Int    @id @default(autoincrement())
+  idSikerPancasila    String @db.VarChar(225)
+  idVideoPancasila    String @db.VarChar(225)
+  kunci               String @db.VarChar(50)
+}
+
+model notif {
+  id      Int    @id @default(autoincrement())
+  nama    String @db.VarChar(100)
+  score   String @db.VarChar(50)
+  email   String @db.LongText
+  tanggal String @db.VarChar(50)
+  urutan  Int
+}
+
+model notifikasi {
+  id           Int    @id @default(autoincrement())
+  onesignal_id String @db.VarChar(100)
+  isitext      String @db.LongText
+  tanggal      String @db.VarChar(50)
+  isi_gambar   String @db.VarChar(200)
+  status       String @db.VarChar(10)
+}
+
+model panduan {
+  idPanduan     Int    @id @default(autoincrement())
+  judul_panduan String @db.VarChar(100)
+  link_panduan  String @db.LongText
+  pdf_panduan   String @db.LongText
+}
+
+model pangkat {
+  idPangkat   Int    @id @default(autoincrement())
+  namaPangkat String @db.VarChar(100)
+  nilai       Int
+  asetPangkat String @db.LongText
+}
+
+model petakonsep {
+  idPetaKonsep Int    @id @default(autoincrement())
+  idJenjang    String @db.VarChar(50)
+  idKelas      String @db.VarChar(50)
+  idMapel      String @db.VarChar(50)
+  idBab        String @db.VarChar(50)
+  kodeQRPk     String @db.VarChar(225)
+  linkPk       String @db.LongText
+  ytid         String @db.LongText
+  idUser       String @db.VarChar(30)
+  tglPk        String @db.VarChar(30)
+}
+
+model provinsi {
+  id_prov String @id @db.Char(2)
+  nama    String @db.TinyText
+}
+
+model qcbarcode {
+  id        Int    @id @default(autoincrement())
+  kodeqr    String @db.VarChar(200)
+  waktuscan String @db.VarChar(200)
+  status    String @default("Sudah Scan") @db.VarChar(200)
+  tp        String @db.VarChar(30)
+  cocok     String @db.LongText
+}
+
+model qrgame {
+  idQRGame   Int    @id @default(autoincrement())
+  idJenjang  String @db.VarChar(50)
+  idKelas    String @db.VarChar(30)
+  idMapel    String @db.VarChar(50)
+  idBab      String @db.VarChar(50)
+  kodeQRGame String @db.VarChar(225)
+  idUser     String @db.VarChar(30)
+  created_at String @db.VarChar(30)
+  updated_at String @db.VarChar(30)
+  deleted_at String @db.VarChar(30)
+  status     Int
+  tp         String @db.VarChar(30)
+}
+
+model qrilustrasi {
+  idQRIlus   Int    @id @default(autoincrement())
+  idJenjang  String @db.VarChar(50)
+  idKelas    String @db.VarChar(30)
+  idMapel    String @db.VarChar(50)
+  idBab      String @db.VarChar(50)
+  kodeQRIlus String @db.VarChar(225)
+  idUser     String @db.VarChar(30)
+  created_at String @db.VarChar(30)
+  updated_at String @db.VarChar(30)
+  deleted_at String @db.VarChar(30)
+  status     Int
+  tp         String @db.VarChar(30)
+}
+
+model qrjurusjitu {
+  idQRJurusJitu Int    @id @default(autoincrement())
+  idJenjang     String @db.VarChar(30)
+  idKelas       String @db.VarChar(50)
+  idMapel       String @db.VarChar(50)
+  idBab         String @db.VarChar(50)
+  idSubBab      String @db.VarChar(50)
+  namaJurusJitu String @db.LongText
+  kodeQRJJ      String @db.VarChar(225)
+  idUser        String @db.VarChar(30)
+  created_at    String @db.VarChar(30)
+  updated_at    String @db.VarChar(30)
+  deleted_at    String @db.VarChar(30)
+  status        Int
+  tp            String @db.VarChar(30)
+}
+
+model qrtryout {
+  idQRTryout   Int    @id @default(autoincrement())
+  idJenjang    String @db.VarChar(50)
+  idKelas      String @db.VarChar(30)
+  idMapel      String @db.VarChar(50)
+  idBab        String @db.VarChar(50)
+  kodeQRTryout String @db.VarChar(225)
+  idUser       String @db.VarChar(30)
+  created_at   String @db.VarChar(30)
+  updated_at   String @db.VarChar(30)
+  deleted_at   String @db.VarChar(30)
+  status       Int
+  tp           String @db.VarChar(30)
+}
+
+model qrujian {
+  idQRUjian   Int     @id @default(autoincrement())
+  idJenjang   Int     @db.Int
+  idKelas     Int     @db.Int
+  idMapel     Int     @db.Int
+  idBab       Int     @db.Int
+  jenjang     jenjang @relation(fields: [idJenjang], references: [idJenjang])
+  kelas       kelas   @relation(fields: [idKelas], references: [idKelas])
+  mapel       mapel   @relation(fields: [idMapel], references: [idMapel])
+  bab         bab     @relation(fields: [idBab], references: [idBab])
+  id_ujian    Int     @db.Int
+  kodeQRUjian String  @db.VarChar(225)
+  idUser      String  @db.VarChar(30)
+  created_at  String  @db.VarChar(30)
+  updated_at  String  @db.VarChar(30)
+  deleted_at  String  @db.VarChar(30)
+  status      Int
+  tp          String  @db.VarChar(30)
+  referensi   String? @db.VarChar(255)
+}
+
+model qrvap {
+  idQRvap    Int     @id @default(autoincrement())
+  idJenjang  Int     @db.Int
+  idKelas    Int     @db.Int
+  idMapel    Int     @db.Int
+  idBab      Int     @db.Int
+  idSubBab   Int     @db.Int
+  jenjang    jenjang @relation(fields: [idJenjang], references: [idJenjang])
+  kelas      kelas   @relation(fields: [idKelas], references: [idKelas])
+  mapel      mapel   @relation(fields: [idMapel], references: [idMapel])
+  bab        bab     @relation(fields: [idBab], references: [idBab])
+  subbab     subbab  @relation(fields: [idSubBab], references: [idSubBab])
+  kodeQR     String  @db.LongText
+  idUser     String  @db.VarChar(30)
+  created_at String  @db.VarChar(50)
+  updated_at String  @db.VarChar(50)
+  deleted_at String  @db.VarChar(50)
+  status     Int
+  tp         String  @db.VarChar(30)
+  status_dmp Int
+  jml_dmp    Int
+
+  @@index([idBab], map: "idx_qrvap_idBab")
+  @@index([idKelas], map: "idx_qrvap_idKelas")
+  @@index([idMapel], map: "idx_qrvap_idMapel")
+  @@index([idSubBab], map: "idx_qrvap_idSubBab")
+  @@index([kodeQR(length: 768)], map: "idx_qrvap_kodeQR")
+}
+
+model savsoft_options {
+  oid            Int     @id @default(autoincrement())
+  qid            Int
+  q_option       String  @db.Text
+  q_option_match String? @db.VarChar(1000)
+  score          Float   @default(0) @db.Float
+}
+
+model savsoft_qbank {
+  qid                 Int    @id @default(autoincrement())
+  question_type       String @default("Multiple Choice Single Answer") @db.VarChar(100)
+  question            String @db.Text
+  description         String @db.Text
+  cid                 Int
+  lid                 Int
+  no_time_served      Int    @default(0)
+  no_time_corrected   Int    @default(0)
+  no_time_incorrected Int    @default(0)
+  no_time_unattempted Int    @default(0)
+}
+
+model siker {
+  idSiker          Int    @id @default(autoincrement())
+  idVideoDmp       String @db.VarChar(100)
+  urutan           String @db.VarChar(50)
+  listDmp          String @db.VarChar(225)
+  mulai            String @db.VarChar(50)
+  selesai          String @db.VarChar(50)
+  durasiSikerMenit String @db.VarChar(50)
+  durasiSikerDetik String @db.VarChar(50)
+  pumenit          String @db.VarChar(30)
+  pudetik          String @db.VarChar(30)
+  statusKuis       String @db.VarChar(50)
+  jmlPilihan       Int
+}
+
+model siker_old {
+  idSiker          Int    @id @default(autoincrement())
+  idVideoDmp       String @db.VarChar(100)
+  urutan           String @db.VarChar(50)
+  listDmp          String @db.VarChar(225)
+  mulai            String @db.VarChar(50)
+  selesai          String @db.VarChar(50)
+  durasiSikerMenit String @db.VarChar(50)
+  durasiSikerDetik String @db.VarChar(50)
+  pumenit          String @db.VarChar(30)
+  pudetik          String @db.VarChar(30)
+  statusKuis       String @db.VarChar(50)
+  jmlPilihan       Int
+
+  @@map("siker-old")
+}
+
+model sikerpancasila {
+  idSikerPancasila Int    @id @default(autoincrement())
+  idVideoPancasila String @db.VarChar(100)
+  urutan           String @db.VarChar(50)
+  listDmp          String @db.VarChar(225)
+  mulai            String @db.VarChar(50)
+  selesai          String @db.VarChar(50)
+  durasiSikerMenit String @db.VarChar(50)
+  durasiSikerDetik String @db.VarChar(50)
+  pumenit          String @db.VarChar(50)
+  pudetik          String @db.VarChar(50)
+  statusKuis       String @db.VarChar(50)
+  jmlPilihan       Int
+}
+
+model slider {
+  idSlider      Int    @id @default(autoincrement())
+  gambar_slider String @db.VarChar(225)
+  urutan        String @db.VarChar(5)
+  aktif         Int
+  link          String @db.LongText
+}
+
+model soal {
+  id_soal Int     @id @default(autoincrement())
+  idBab   Int
+  nomor   Int?
+  soal    String? @db.LongText
+  jenis   Int?
+  pilA    String? @db.LongText
+  pilB    String? @db.LongText
+  pilC    String? @db.LongText
+  pilD    String? @db.LongText
+  pilE    String? @db.LongText
+  jawaban String? @db.VarChar(1)
+  file    String? @db.MediumText
+  file1   String? @db.MediumText
+  fileA   String? @db.MediumText
+  fileB   String? @db.MediumText
+  fileC   String? @db.MediumText
+  fileD   String? @db.MediumText
+  fileE   String? @db.MediumText
+}
+
+model subbab {
+  idSubBab   Int     @id @default(autoincrement())
+  idJenjang  String  @db.VarChar(30)
+  idKelas    String  @db.VarChar(30)
+  idMapel    String  @db.VarChar(30)
+  idBab      String  @db.VarChar(30)
+  namaSubBab String  @db.VarChar(225)
+  kodeQR     String  @db.VarChar(225)
+  idUser     Int
+  created_at String  @db.VarChar(30)
+  updated_at String  @db.VarChar(30)
+  deleted_at String  @db.VarChar(30)
+  status     Int
+  tp         String  @db.VarChar(30)
+  statusDMP  Int
+  jmlDMP     String  @db.VarChar(3)
+  qrvap      qrvap[]
+}
+
+model submateri {
+  idSubMateri   Int    @id @default(autoincrement())
+  idJenjang     String @db.VarChar(30)
+  idKelas       String @db.VarChar(30)
+  idMapel       String @db.VarChar(30)
+  idBab         String @db.VarChar(30)
+  idSubBab      String @db.VarChar(30)
+  namaSubMateri String @db.VarChar(225)
+  linkVideo     String @db.LongText
+  ytid          String @db.VarChar(225)
+  idUser        Int
+  created_at    String @db.VarChar(30)
+  updated_at    String @db.VarChar(30)
+  deleted_at    String @db.VarChar(30)
+  status        Int
+  tp            String @db.VarChar(30)
+}
+
+model tahunproduksi {
+  idTahunProduksi Int    @id @default(autoincrement())
+  tahunProduksi   String @db.VarChar(30)
+  semester        String @db.VarChar(30)
+  angka           String @db.VarChar(5)
+  kode            String @db.VarChar(50)
+  statusTahun     Int
+  idUser          String @db.VarChar(50)
+  created_at      String @db.VarChar(30)
+  updated_at      String @db.VarChar(30)
+  deleted_at      String @db.VarChar(30)
+}
+
+model tahunproduksipers {
+  idTahun       Int    @id @default(autoincrement())
+  tahunProduksi String @db.VarChar(30)
+  status_tahun  String @db.VarChar(5)
+}
+
+model tanswer {
+  Id            Int          @id @default(autoincrement())
+  descriptionId Int
+  groupId       Int
+  companyId     String       @db.VarChar(50)
+  jawaban       String       @db.VarChar(1)
+  jawabanA      Int
+  jawabanB      Int
+  jawabanC      Int
+  jawabanD      Int
+  jawabanE      Int
+  tcompany      tcompany     @relation(fields: [companyId], references: [companyId], onDelete: Cascade, map: "tanswer_ibfk_1")
+  tgroup        tgroup       @relation(fields: [groupId], references: [groupId], onDelete: Cascade, map: "tanswer_ibfk_3")
+  tdescription  tdescription @relation(fields: [descriptionId], references: [descriptionId], onDelete: Cascade, map: "tanswer_ibfk_4")
+
+  @@index([companyId], map: "companyId")
+  @@index([companyId], map: "companyId_2")
+  @@index([descriptionId], map: "descriptionId")
+  @@index([groupId], map: "groupId")
+  @@index([groupId], map: "groupId_2")
+  @@index([groupId], map: "groupId_3")
+}
+
+model tbl_delegasi {
+  id_delegasi    Int    @id @default(autoincrement())
+  id_kategori    String @db.VarChar(30)
+  total_produksi String @db.VarChar(30)
+  target_harian  String @db.VarChar(30)
+  pic            String @db.VarChar(30)
+  tgl            String @db.VarChar(30)
+  thd            String @db.VarChar(30)
+}
+
+model tbl_divisi {
+  id_divisi   Int    @id @default(autoincrement())
+  nama_divisi String @db.VarChar(50)
+}
+
+model tbl_hasil_game {
+  idhasilgame Int    @id @default(autoincrement())
+  idgame      String @db.VarChar(50)
+  iduser      String @db.VarChar(50)
+  skor        Int
+  date        String @db.VarChar(50)
+  urutan      Int
+  username    String @db.VarChar(200)
+}
+
+model tbl_hasil_to {
+  id_tbl_to Int    @id @default(autoincrement())
+  idSoal    String @db.VarChar(30)
+  idSiswa   String @db.VarChar(30)
+  idMapel   String @db.VarChar(30)
+  nilai     String @db.VarChar(30)
+  peringkat String @db.VarChar(30)
+}
+
+model tbl_hasil_to_gupin {
+  id_tbl_to Int    @id @default(autoincrement())
+  idSoal    String @db.VarChar(30)
+  idSiswa   String @db.VarChar(30)
+  idMapel   String @db.VarChar(30)
+  nilai     String @db.VarChar(30)
+  peringkat String @db.VarChar(30)
+}
+
+model tbl_kategori {
+  id_kategori   Int    @id @default(autoincrement())
+  nama_kategori String @db.VarChar(50)
+  id_divisi     String @db.VarChar(30)
+}
+
+model tbl_pemetaan {
+  id_pemetaan     Int    @id @default(autoincrement())
+  id_kategori     String @db.VarChar(30)
+  lama_pengerjaan String @db.VarChar(30)
+  total_target    String @db.VarChar(30)
+  idUser          String @db.VarChar(30)
+  tgl             String @db.VarChar(30)
+  thp             String @db.VarChar(30)
+}
+
+model tbl_post {
+  post_id    Int    @id @default(autoincrement())
+  post_title String @db.Text
+  post_text  String @db.Text
+  post_url   String @db.Text
+  harga      String @db.VarChar(30)
+  cover      String @db.LongText
+  no_prod    String @db.VarChar(50)
+  no_isbn    String @db.VarChar(30)
+  berat      String @db.VarChar(30)
+  penulis    String @db.VarChar(50)
+}
+
+model tbl_tugased {
+  id_tugased    Int    @id @default(autoincrement())
+  id_kategori   String @db.VarChar(30)
+  pic           String @db.VarChar(30)
+  deskripsi     String @db.LongText
+  link          String @db.LongText
+  tgl           String @db.VarChar(30)
+  id_delegasi   String @db.VarChar(30)
+  thp           String @db.VarChar(30)
+  idJenjang     String @db.VarChar(30)
+  idKelas       String @db.VarChar(30)
+  idMapel       String @db.VarChar(30)
+  idBab         String @db.VarChar(30)
+  idSubBab      String @db.VarChar(30)
+  ytid          String @db.VarChar(50)
+  jmlKuis       String @db.VarChar(10)
+  status        Int
+  fileIlustrasi String @db.LongText
+}
+
+model tcompany {
+  companyId      String    @id @db.VarChar(50)
+  companyName    String    @db.VarChar(30)
+  companyAddress String    @db.Text
+  companyPhoneHp String    @db.VarChar(30)
+  dateSurvey     String    @db.VarChar(30)
+  suggestion     String    @db.Text
+  product        String    @db.VarChar(20)
+  tanswer        tanswer[]
+}
+
+model tdescription {
+  descriptionId Int       @id @default(autoincrement())
+  description   String    @db.Text
+  groupId       Int
+  CreatedDate   DateTime  @db.DateTime(0)
+  CreatedUser   Int
+  ModifiedDate  DateTime  @db.DateTime(0)
+  ModifiedUser  Int
+  tanswer       tanswer[]
+
+  @@index([groupId], map: "groupId")
+}
+
+model tgroup {
+  groupId          Int       @id @default(autoincrement())
+  groupName        String    @db.VarChar(255)
+  CreatedDate      DateTime  @db.DateTime(0)
+  CreatedUser      Int
+  ModifiedDate     DateTime  @db.DateTime(0)
+  ModifiedUser     Int
+  idVideoPancasila String    @db.VarChar(50)
+  tanswer          tanswer[]
+
+  @@index([CreatedUser, ModifiedUser], map: "CreatedUser")
+  @@index([CreatedUser], map: "CreatedUser_2")
+}
+
+model tr_jawaban {
+  id_jawaban Int    @id @default(autoincrement())
+  id_siswa   String @db.VarChar(200)
+  id_mapel   String @db.VarChar(200)
+  id_soal    String @db.VarChar(200)
+  no_soal    String @db.VarChar(200)
+  id_ujian   String @db.VarChar(200)
+  jawaban    String @db.VarChar(200)
+  kunci      String @db.VarChar(200)
+  jenis      String @db.VarChar(1)
+}
+
+model tr_jawaban_gupin {
+  id_jawaban Int    @id @default(autoincrement())
+  id_siswa   String @db.VarChar(200)
+  id_mapel   String @db.VarChar(200)
+  id_soal    String @db.VarChar(200)
+  no_soal    String @db.VarChar(200)
+  id_ujian   String @db.VarChar(200)
+  jawaban    String @db.VarChar(200)
+  kunci      String @db.VarChar(200)
+  jenis      String @db.VarChar(1)
+}
+
+model tr_mapel {
+  idMapel   Int    @id @default(autoincrement())
+  idKelas   String @db.VarChar(30)
+  namaMapel String @db.VarChar(100)
+  asset     String @db.LongText
+  status    Int    @default(0)
+}
+
+model tr_sd {
+  idTr_sd           Int    @id @default(autoincrement())
+  idKelas           String @db.VarChar(30)
+  idMapel           String @db.VarChar(30)
+  soal              String @db.LongText
+  gambarSoal        String @db.LongText
+  pil_a             String @db.LongText
+  pil_b             String @db.LongText
+  pil_c             String @db.LongText
+  kunci             String @db.VarChar(20)
+  tp                String @db.VarChar(50)
+  video_pembahasan  String @db.LongText
+  penjelasan        String @db.LongText
+  uts_uas           String @db.VarChar(10)
+  aktif             String @db.VarChar(10)
+  idUser            String @db.VarChar(30)
+  nomorSoal         String @db.VarChar(30)
+  gambar_pembahasan String @db.LongText
+}
+
+model tr_sma {
+  idTr_sma          Int    @id @default(autoincrement())
+  idKelas           String @db.VarChar(30)
+  idMapel           String @db.VarChar(30)
+  soal              String @db.LongText
+  gambarSoal        String @db.LongText
+  pil_a             String @db.LongText
+  pil_b             String @db.LongText
+  pil_c             String @db.LongText
+  pil_d             String @db.LongText
+  pil_e             String @db.LongText
+  kunci             String @db.VarChar(20)
+  tp                String @db.VarChar(50)
+  video_pembahasan  String @db.LongText
+  penjelasan        String @db.LongText
+  uts_uas           String @db.VarChar(10)
+  aktif             String @db.VarChar(10)
+  idUser            String @db.VarChar(30)
+  nomorSoal         String @db.VarChar(30)
+  gambar_pembahasan String @db.LongText
+}
+
+model tr_smp {
+  idTr_smp          Int    @id @default(autoincrement())
+  idKelas           String @db.VarChar(30)
+  idMapel           String @db.VarChar(30)
+  soal              String @db.LongText
+  gambarSoal        String @db.LongText
+  pil_a             String @db.LongText
+  pil_b             String @db.LongText
+  pil_c             String @db.LongText
+  pil_d             String @db.LongText
+  kunci             String @db.VarChar(20)
+  tp                String @db.VarChar(50)
+  video_pembahasan  String @db.LongText
+  penjelasan        String @db.LongText
+  uts_uas           String @db.VarChar(10)
+  aktif             String @db.VarChar(10)
+  idUser            String @db.VarChar(30)
+  nomorSoal         String @db.VarChar(30)
+  gambar_pembahasan String @db.LongText
+}
+
+model tuser {
+  userId   Int    @id @default(autoincrement())
+  username String @db.VarChar(32)
+  password String @db.VarChar(32)
+  fullname String @db.VarChar(30)
+  email    String @db.VarChar(30)
+  level    String @db.VarChar(30)
+}
+
+model ujian {
+  id_ujian      Int       @id @default(autoincrement())
+  kode_nama     String?   @default("0") @db.VarChar(255)
+  id_pk         String    @db.VarChar(255)
+  id_guru       Int
+  id_mapel      Int
+  kode_ujian    String?   @db.VarChar(30)
+  nama          String    @db.VarChar(100)
+  jml_soal      Int
+  jml_esai      Int
+  bobot_pg      Int
+  opsi          Int
+  bobot_esai    Int
+  tampil_pg     Int
+  tampil_esai   Int
+  lama_ujian    Int
+  tgl_ujian     DateTime  @db.DateTime(0)
+  tgl_selesai   DateTime  @db.DateTime(0)
+  waktu_ujian   DateTime? @db.Time(0)
+  selesai_ujian DateTime? @db.Time(0)
+  level         String    @db.VarChar(5)
+  kelas         String    @db.VarChar(255)
+  sesi          String?   @db.VarChar(1)
+  acak          Int
+  token         Int
+  status        Int?
+  hasil         Int?
+  kkm           String?   @db.VarChar(128)
+  ulang         Int?
+  soal_agama    String?   @db.VarChar(50)
+  reset         Int?
+}
+
+model user {
+  idUser   Int    @id @default(autoincrement())
+  idLevel  Int
+  nama     String @db.VarChar(50)
+  username String @db.VarChar(50)
+  password String @db.VarChar(225)
+  pu       String @db.VarChar(225)
+  status   String @db.VarChar(5)
+  wa       String @db.VarChar(20)
+  jk       String @db.VarChar(10)
+  tglLahir String @db.VarChar(30)
+  foto     String @db.VarChar(225)
+  email    String @db.VarChar(225)
+}
+
+model usergame {
+  idUserGame   Int    @id @default(autoincrement())
+  username     String @db.LongText
+  password     String @db.VarChar(30)
+  email        String @db.VarChar(30)
+  nowa         String @db.VarChar(14)
+  alamat       String @db.VarChar(200)
+  asal_sekolah String @db.VarChar(200)
+  otp          Int
+  jenjang      String @db.VarChar(20)
+  stslog       Int
+  kurikulum    String @db.VarChar(100)
+  avatar       String @db.LongText
+}
+
+model userpers {
+  idUser    Int    @id @default(autoincrement())
+  idLevel   Int
+  nama      String @db.VarChar(50)
+  username  String @db.VarChar(50)
+  password  String @db.VarChar(225)
+  pu        String @db.VarChar(225)
+  status    String @db.VarChar(5)
+  wa        String @db.VarChar(20)
+  jk        String @db.VarChar(10)
+  tglLahir  String @db.VarChar(30)
+  foto      String @db.VarChar(225)
+  email     String @db.VarChar(50)
+  kodeAkses String @db.VarChar(30)
+}
+
+model videodmp {
+  idVideoDmp   Int    @id @default(autoincrement())
+  idJenjang    String @db.VarChar(100)
+  idKelas      String @db.VarChar(100)
+  idMapel      String @db.VarChar(100)
+  idBab        String @db.VarChar(100)
+  idSubBab     String @db.VarChar(50)
+  namaVideoDmp String @db.LongText
+  durasi       String @db.VarChar(225)
+  linkDmp      String @db.LongText
+  ytidDmp      String @db.VarChar(50)
+  idUser       String @db.VarChar(20)
+  created_at   String @db.VarChar(30)
+  updated_at   String @db.VarChar(30)
+  deleted_at   String @db.VarChar(30)
+  jmlKuis      String @db.VarChar(30)
+  status       Int
+  tp           String @db.VarChar(30)
+}
+
+model videodmp_old {
+  idVideoDmp   Int    @id
+  idJenjang    String @db.VarChar(100)
+  idKelas      String @db.VarChar(100)
+  idMapel      String @db.VarChar(100)
+  idBab        String @db.VarChar(100)
+  idSubBab     String @db.VarChar(50)
+  namaVideoDmp String @db.LongText
+  durasi       String @db.VarChar(225)
+  linkDmp      String @db.LongText
+  ytidDmp      String @db.VarChar(50)
+  idUser       String @db.VarChar(20)
+  tgl          String @db.VarChar(50)
+  jmlKuis      String @db.VarChar(30)
+
+  @@map("videodmp-old")
+}
+
+model videojj {
+  idVideoJJ     Int    @id @default(autoincrement())
+  idJenjang     String @db.VarChar(50)
+  idKelas       String @db.VarChar(50)
+  idMapel       String @db.VarChar(50)
+  idBab         String @db.VarChar(50)
+  idSubBab      String @db.VarChar(30)
+  idQRJurusJitu String @db.VarChar(50)
+  namaVideoJJ   String @db.LongText
+  linkVideoJJ   String @db.LongText
+  ytid          String @db.VarChar(225)
+  idUser        String @db.VarChar(30)
+  created_at    String @db.VarChar(30)
+  updated_at    String @db.VarChar(30)
+  deleted_at    String @db.VarChar(30)
+  status        Int
+  tp            String @db.VarChar(30)
+}
+
+model videopancasila {
+  idVideoPancasila   Int    @id @default(autoincrement())
+  idJenjang          String @db.VarChar(100)
+  namaVideoPancasila String @db.LongText
+  durasi             String @db.VarChar(50)
+  linkPancasila      String @db.LongText
+  ytidPancasila      String @db.VarChar(100)
+  idUser             String @db.VarChar(20)
+  created_at         String @db.VarChar(30)
+  updated_at         String @db.VarChar(30)
+  deleted_at         String @db.VarChar(30)
+  jmlKuis            String @db.VarChar(30)
+  status             Int
+  tp                 String @db.VarChar(30)
+  idKoneksi          String @db.VarChar(30)
+  urutan             String @db.VarChar(10)
+}
+
+model videopk {
+  idVideoPk     Int    @id @default(autoincrement())
+  namaQR        String @db.VarChar(100)
+  kodeQRVideoPk String @db.VarChar(225)
+  idUser        String @db.VarChar(30)
+  tglPk         String @db.VarChar(30)
+  status        Int
+  isi           String @db.VarChar(10)
+}
+
+model videopkdetail {
+  idVideoPkDetail Int    @id @default(autoincrement())
+  idVideoPk       String @db.VarChar(30)
+  kategori        String @db.VarChar(100)
+  linkVideoPk     String @db.LongText
+  ytid            String @db.LongText
+  idUser          String @db.VarChar(20)
+  tglPk           String @db.VarChar(30)
+}
