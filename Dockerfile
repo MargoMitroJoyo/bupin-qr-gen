@@ -7,6 +7,8 @@ COPY . .
 
 RUN bun install --frozen-lockfile
 
+RUN bun db:generate
+
 RUN bun build --compile --minify --bytecode --sourcemap ./src/index.ts --outfile ./dist/compiled/main
 
 RUN rm -rf src tests README.md
@@ -26,6 +28,7 @@ RUN apt update && \
 WORKDIR /app
 
 COPY --from=builder /app/dist/compiled/main /app/main
+COPY --from=builder /app/node_modules/.prisma /app/node_modules/.prisma
 COPY --from=builder /app/assets /app/assets
 
 EXPOSE 3000
