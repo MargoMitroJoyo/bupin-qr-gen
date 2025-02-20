@@ -14,7 +14,7 @@ RUN bun build --compile --minify --bytecode --sourcemap ./src/index.ts --outfile
 RUN rm -rf src tests README.md
 
 # stage 2
-FROM oven/bun:latest AS runner
+FROM debian:bookworm-slim AS runner
 
 RUN apt update && \
     apt install -y \
