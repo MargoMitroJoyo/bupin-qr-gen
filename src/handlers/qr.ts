@@ -4,6 +4,7 @@ import { zValidator } from "@hono/zod-validator"
 import { z } from "zod"
 import { createCanvas, registerFont } from "canvas"
 import { getFileName } from "../utils"
+import sharp from "sharp"
 
 registerFont("./assets/fonts/Poppins-SemiBold.ttf", { family: "Poppins", weight: "600" })
 
@@ -19,7 +20,7 @@ export const getQRImage = factory.createHandlers(
   zValidator(
     "query",
     z.object({
-      format: z.enum(["png", "jpeg"]).optional().default("png"),
+      format: z.enum(["png", "jpeg", "avif"]).optional().default("png"),
       detail: z.enum(["low", "medium", "high"]).optional().default("high"),
     })
   ),
@@ -72,11 +73,16 @@ export const getQRImage = factory.createHandlers(
       ctx.fillStyle = "black"
       ctx.fillText("bupin.id", textX, textY)
 
-      const buffer = format === "jpeg" ? canvas.toBuffer("image/jpeg") : canvas.toBuffer("image/png")
+      const buffer = canvas.toBuffer("image/png")
+
+      const compressedBuffer = await sharp(buffer)
+        .toFormat(format as keyof sharp.FormatEnum, { quality: 80 })
+        .toBuffer()
+
       const contentType = `image/${format}`
       const fileName = `${fileNameFromInfo}.${format === "jpeg" ? "jpg" : "png"}`
 
-      return c.body(buffer, {
+      return c.body(compressedBuffer, {
         headers: {
           "Content-Type": contentType,
           "Content-Disposition": `inline; filename="${fileName}"`,
