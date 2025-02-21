@@ -8,10 +8,9 @@ services:
     environment:
       - PORT=3000
       - NODE_ENV=production
-    volumes: [ "./:/home/bun/app" ]
     deploy:
       resources:
         limits:
-          cpus: "2"
+          cpus: "1"
           memory: "1024M"
     restart: unless-stopped
