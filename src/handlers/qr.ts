@@ -79,20 +79,13 @@ export const getQRImage = factory.createHandlers(
         .toFormat(format as keyof sharp.FormatEnum, { quality: 80 })
         .toBuffer()
 
-      const contentType = (): string => {
-        switch (format) {
-          case "jpeg":
-            return "image/jpeg"
-          default:
-            return "image/png"
-        }
-      }
+      const contentType = format === "jpeg" ? "image/jpeg" : "image/png"
 
       const fileName = `${fileNameFromInfo}.${format === "jpeg" ? "jpg" : "png"}`
 
       return c.body(compressedBuffer, {
         headers: {
-          "Content-Type": String(contentType),
+          "Content-Type": contentType,
           "Content-Disposition": `inline; filename="${fileName}"`,
         },
       })
