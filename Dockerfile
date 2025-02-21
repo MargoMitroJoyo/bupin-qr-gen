@@ -9,13 +9,6 @@ RUN bun install --frozen-lockfile
 
 RUN bun db:generate
 
-RUN bun build --compile --minify --bytecode --sourcemap ./src/index.ts --outfile ./dist/compiled/main
-
-RUN rm -rf src tests README.md
-
-# stage 2
-FROM debian:bookworm-slim AS runner
-
 RUN apt update && \
     apt install -y \
     libcairo2-dev \
@@ -25,14 +18,8 @@ RUN apt update && \
     librsvg2-dev \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
+ENTRYPOINT ["bun"]
 
-COPY --from=builder /app/dist/compiled/main /app/main
-COPY --from=builder /app/node_modules/.prisma /app/node_modules/.prisma
-COPY --from=builder /app/assets /app/assets
-
-ENTRYPOINT ["/app/main"]
-
-CMD ["--port", "3000"]
+CMD ["run", "./src/index.ts"]
 
 EXPOSE 3000
