@@ -31,6 +31,8 @@ COPY --from=builder /app/dist/compiled/main /app/main
 COPY --from=builder /app/node_modules/.prisma /app/node_modules/.prisma
 COPY --from=builder /app/assets /app/assets
 
-EXPOSE 3000
+ENTRYPOINT ["/app/main"]
 
-CMD ["/app/main"]
+CMD ["--port", "3000"]
+
+EXPOSE 3000
