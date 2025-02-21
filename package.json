@@ -2,7 +2,8 @@
   "name": "bupin-qr-gen",
   "scripts": {
     "dev": "bun run --hot src/index.ts",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate",
+    "compile": "bun build --compile --minify --bytecode --sourcemap ./src/index.ts --outfile ./dist/compiled/main"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.3",
