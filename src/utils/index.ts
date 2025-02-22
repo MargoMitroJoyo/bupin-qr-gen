@@ -254,8 +254,8 @@ export async function getFileName(qrcode: string): Promise<string> {
       const kelas = getJenjangKelas(info.nama_kelas)
       const kurikulum = getKurikulum(info.nama_jenjang)
       const mapel = info.nama_mapel
-      const bab = getBab(info.nama_bab)
-      const subbab = getSubBab(info.nama_sub_bab)
+      const bab = getBab(info.nama_bab).replace("â€™", "'")
+      const subbab = getSubBab(info.nama_sub_bab).replace("â€™", "'")
 
       return `${kelas} - ${kurikulum} - ${mapel} - ${bab} - ${subbab} - ${qrcode}`
     }
