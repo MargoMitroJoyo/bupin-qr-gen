@@ -3,12 +3,13 @@
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "db:generate": "prisma generate",
+    "build": "bun build --sourcemap ./src/index.ts --outfile ./dist/",
     "compile": "bun build --compile --minify --bytecode --sourcemap ./src/index.ts --outfile ./dist/compiled/main"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.3",
+    "@napi-rs/canvas": "^0.1.67",
     "@prisma/client": "^6.4.1",
-    "canvas": "^3.1.0",
     "hono": "^4.7.2",
     "qrcode": "^1.5.4",
     "sharp": "^0.33.5",
