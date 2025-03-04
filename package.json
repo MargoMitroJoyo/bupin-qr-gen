@@ -3,8 +3,8 @@
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "db:generate": "prisma generate",
-    "build": "bun build --sourcemap ./src/index.ts --outfile ./dist/",
-    "compile": "bun build --compile --minify --bytecode --sourcemap ./src/index.ts --outfile ./dist/compiled/main"
+    "build": "bun build --minify --sourcemap --target=bun ./src/index.ts --outdir ./dist/",
+    "compile": "bun build --compile --minify --bytecode --sourcemap ./src/index.ts --outfile ./dist/main"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.3",
