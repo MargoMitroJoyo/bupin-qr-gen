@@ -1,5 +1,5 @@
 import { createFactory } from "hono/factory"
-import { QRCodeErrorCorrectionLevel, toCanvas } from "qrcode"
+import { QRCodeErrorCorrectionLevel } from "qrcode"
 import { zValidator } from "@hono/zod-validator"
 import { z } from "zod"
 import { addTextOverlay, compressImage, generateQRCode, getFileName } from "../utils"
