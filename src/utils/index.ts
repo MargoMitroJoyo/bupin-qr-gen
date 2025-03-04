@@ -1,7 +1,7 @@
 import { QRCodeErrorCorrectionLevel, toCanvas } from "qrcode"
 import { prisma } from "../lib/db"
 import { InfoUJN, InfoVID } from "../types"
-import { Canvas, createCanvas, registerFont } from "canvas"
+import { Canvas, createCanvas, GlobalFonts } from "@napi-rs/canvas"
 import sharp from "sharp"
 
 /**
@@ -290,7 +290,7 @@ export async function generateQRCode(
  * @param canvas - The canvas element to which the text overlay will be added.
  */
 export function addTextOverlay(canvas: Canvas) {
-  registerFont("./assets/fonts/Poppins-SemiBold.ttf", { family: "Poppins", weight: "600" })
+  GlobalFonts.registerFromPath("./assets/fonts/Poppins-SemiBold.ttf", "Poppins")
 
   const ctx = canvas.getContext("2d")
   const rectMargin = 13
