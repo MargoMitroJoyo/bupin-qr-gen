@@ -1,4 +1,4 @@
-# Bupin QR Code Genertor
+# Bupin QR Code Generator
 
 This project was created with the main purpose of being a QR image generator from Bupin 4.0 content codes. Although it can be used for any url (not just content codes), we do not recommend it.
 
