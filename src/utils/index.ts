@@ -1,5 +1,8 @@
+import { QRCodeErrorCorrectionLevel, toCanvas } from "qrcode"
 import { prisma } from "../lib/db"
 import { InfoUJN, InfoVID } from "../types"
+import { Canvas, createCanvas, registerFont } from "canvas"
+import sharp from "sharp"
 
 /**
  * Fetches information from the UJN API using the provided QR code.
@@ -263,4 +266,62 @@ export async function getFileName(qrcode: string): Promise<string> {
     console.error(error)
     return qrcode
   }
+}
+
+/**
+ * Generates a QR code for the given URL and returns it as a Canvas object.
+ *
+ * @param url - The URL to encode in the QR code.
+ * @param detail - The error correction level for the QR code.
+ * @returns A promise that resolves to a Canvas object containing the generated QR code.
+ */
+export async function generateQRCode(
+  url: string,
+  detail: QRCodeErrorCorrectionLevel
+): Promise<Canvas> {
+  const canvas = createCanvas(512, 512)
+  await toCanvas(canvas, url, { margin: 1, width: 512, errorCorrectionLevel: detail })
+  return canvas
+}
+
+/**
+ * Adds a text overlay to the given canvas element.
+ *
+ * @param canvas - The canvas element to which the text overlay will be added.
+ */
+export function addTextOverlay(canvas: Canvas) {
+  registerFont("./assets/fonts/Poppins-SemiBold.ttf", { family: "Poppins", weight: "600" })
+
+  const ctx = canvas.getContext("2d")
+  const rectMargin = 13
+  const rectWidth = 145
+  const rectHeight = 39
+  const x = canvas.width - rectWidth - rectMargin
+  const y = canvas.height - rectHeight - rectMargin
+  ctx.clearRect(x, y, rectWidth, rectHeight)
+  ctx.fillStyle = "black"
+  ctx.font = "600 35px Poppins"
+  ctx.textAlign = "center"
+  ctx.textBaseline = "middle"
+
+  const textX = canvas.width - rectWidth - rectMargin + rectWidth / 2
+  const textY = canvas.height - rectHeight - rectMargin + rectHeight / 2 - 3
+
+  ctx.lineWidth = 3
+  ctx.strokeStyle = "white"
+  ctx.strokeText("bupin.id", textX, textY)
+  ctx.fillStyle = "black"
+  ctx.fillText("bupin.id", textX, textY)
+}
+
+/**
+ * Compresses an image from a canvas element and converts it to the specified format.
+ *
+ * @returns A promise that resolves to a Buffer containing the compressed image data.
+ */
+export async function compressImage(canvas: Canvas, format: string): Promise<Buffer> {
+  const buffer = canvas.toBuffer("image/png")
+  return sharp(buffer)
+    .toFormat(format as keyof sharp.FormatEnum, { quality: 80 })
+    .toBuffer()
 }
