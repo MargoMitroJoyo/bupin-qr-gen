@@ -3,6 +3,7 @@ import { prisma } from "../lib/db"
 import { InfoUJN, InfoVID } from "../types"
 import { Canvas, createCanvas, GlobalFonts } from "@napi-rs/canvas"
 import sharp from "sharp"
+import { Context } from "hono"
 
 /**
  * Fetches information from the UJN API using the provided QR code.
@@ -324,4 +325,43 @@ export async function compressImage(canvas: Canvas, format: string): Promise<Buf
   return sharp(buffer)
     .toFormat(format as keyof sharp.FormatEnum, { quality: 80 })
     .toBuffer()
+}
+
+/**
+ * Generates an image of a QR code with optional watermark and compression.
+ *
+ * @param c - The context object.
+ * @param url - The URL to encode in the QR code.
+ * @param format - The image format, either "jpeg" or "png".
+ * @param detail - The error correction level for the QR code.
+ * @param name - The name of the generated image file.
+ * @param watermark - Optional boolean to add a watermark to the image. Defaults to true.
+ * @returns A promise that resolves with the generated image as a response body.
+ * @throws Will throw an error if QR code generation or image compression fails.
+ */
+export async function generateImage(
+  c: Context,
+  url: string,
+  format: string,
+  detail: string,
+  name: string,
+  watermark = true
+) {
+  try {
+    const canvas = await generateQRCode(url, detail as QRCodeErrorCorrectionLevel)
+    if (watermark) addTextOverlay(canvas)
+    const compressedBuffer = await compressImage(canvas, format)
+    const contentType = format === "jpeg" ? "image/jpeg" : "image/png"
+    const fileName = `${name}.${format === "jpeg" ? "jpg" : "png"}`
+
+    return c.body(compressedBuffer, {
+      headers: {
+        "Content-Type": contentType,
+        "Content-Disposition": `inline; filename="${fileName}"`,
+      },
+    })
+  } catch (error) {
+    console.error("Error generating QR code:", error)
+    return c.text("Failed to generate QR code.", 500)
+  }
 }
