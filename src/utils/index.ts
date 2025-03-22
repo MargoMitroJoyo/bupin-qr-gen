@@ -14,57 +14,27 @@ import { Context } from "hono"
  */
 export async function fetchInfoUJN(qrcode: string): Promise<InfoUJN> {
   const info = await prisma.qrujian.findFirst({
-    where: {
-      kodeQRUjian: qrcode,
-    },
+    where: { kodeQRUjian: qrcode },
     select: {
       kodeQRUjian: true,
       id_ujian: true,
-      idJenjang: true,
-      idKelas: true,
-      idMapel: true,
-      idBab: true,
-      jenjang: {
-        select: {
-          namaJenjang: true,
-        },
-      },
-      kelas: {
-        select: {
-          namaKelas: true,
-        },
-      },
-      mapel: {
-        select: {
-          namaMapel: true,
-        },
-      },
-      bab: {
-        select: {
-          namaBab: true,
-        },
-      },
+      jenjang: { select: { namaJenjang: true } },
+      kelas: { select: { namaKelas: true } },
+      mapel: { select: { namaMapel: true } },
+      bab: { select: { namaBab: true } },
     },
   })
 
-  if (!info) {
-    throw new Error("Failed to fetch data")
-  }
+  if (!info) throw new Error("Failed to fetch data")
 
-  const data: InfoUJN = {
+  return {
     kodeQRUjian: info.kodeQRUjian,
     idUjian: info.id_ujian,
-    idJenjang: info.idJenjang,
-    idKelas: info.idKelas,
-    idMapel: info.idMapel,
-    idBab: info.idBab,
     namaJenjang: info.jenjang.namaJenjang,
     namaKelas: info.kelas.namaKelas,
-    namaBab: info.bab.namaBab,
     namaMapel: info.mapel.namaMapel,
+    namaBab: info.bab.namaBab,
   }
-
-  return data
 }
 
 /**
@@ -76,67 +46,27 @@ export async function fetchInfoUJN(qrcode: string): Promise<InfoUJN> {
  */
 export async function fetchInfoVID(qrcode: string): Promise<InfoVID> {
   const info = await prisma.qrvap.findFirst({
-    where: {
-      kodeQR: qrcode,
-    },
+    where: { kodeQR: qrcode },
     select: {
       kodeQR: true,
-      idKelas: true,
-      idMapel: true,
-      idBab: true,
-      idSubBab: true,
-      tp: true,
-      jenjang: {
-        select: {
-          namaJenjang: true,
-        },
-      },
-      kelas: {
-        select: {
-          namaKelas: true,
-        },
-      },
-      mapel: {
-        select: {
-          namaMapel: true,
-        },
-      },
-      bab: {
-        select: {
-          namaBab: true,
-        },
-      },
-      subbab: {
-        select: {
-          namaSubBab: true,
-        },
-      },
+      jenjang: { select: { namaJenjang: true } },
+      kelas: { select: { namaKelas: true } },
+      mapel: { select: { namaMapel: true } },
+      bab: { select: { namaBab: true } },
+      subbab: { select: { namaSubBab: true } },
     },
   })
 
-  if (!info) {
-    throw new Error("Failed to fetch data")
-  }
+  if (!info) throw new Error("Failed to fetch data")
 
-  const data: InfoVID = {
+  return {
     kode_qr: info.kodeQR,
     nama_jenjang: info.jenjang.namaJenjang,
     nama_kelas: info.kelas.namaKelas,
     nama_mapel: info.mapel.namaMapel,
     nama_bab: info.bab.namaBab,
     nama_sub_bab: info.subbab.namaSubBab,
-    id_kelas: info.idKelas,
-    id_mapel: info.idMapel,
-    id_bab: info.idBab,
-    id_sub_bab: info.idSubBab,
-    link_video: "",
-    ytid: "",
-    link_dmp: null,
-    ytid_dmp: null,
-    tp: "",
   }
-
-  return data
 }
 
 /**
@@ -146,23 +76,9 @@ export async function fetchInfoVID(qrcode: string): Promise<InfoVID> {
  * @returns The extracted educational level and class as a string, or the original input string if no match is found.
  */
 export function getJenjangKelas(inputString: string): string {
-  const jenjangs = ["SD", "SMP", "SMA", "MI", "MTS", "SMK", "MA"]
-
-  const regex = new RegExp(
-    `\\b(${jenjangs.join("|")})(?:-)?\\s*(\\d+|VII|VIII|IX|X|XI|XII)\\b`,
-    "i"
-  )
-
+  const regex = /\b(SD|SMP|SMA|MI|MTS|SMK|MA)[-\s]*(\d+|VII|VIII|IX|X|XI|XII)\b/i
   const match = inputString.match(regex)
-
-  if (!match) {
-    return inputString
-  }
-
-  const jenjang = match[1]
-  const kelas = match[2]
-
-  return `${jenjang} ${kelas}`
+  return match ? `${match[1]} ${match[2]}` : inputString
 }
 
 /**
@@ -172,22 +88,11 @@ export function getJenjangKelas(inputString: string): string {
  * @returns The curriculum type as a string.
  */
 export function getKurikulum(inputString: string): string {
-  const string = inputString.toLowerCase()
-
-  if (string.includes("merdeka")) {
-    return "KURMER"
-  } else if (string.includes("kma 143")) {
-    return "KMA 143"
-  } else if (string.includes("kma 183")) {
-    return "KMA 143"
-  } else if (string.includes("kma 347")) {
-    return "KMA 143"
-  } else if (string.includes("btq")) {
-    return "BTQ"
-  } else if (string.includes("2013")) {
-    return "K13"
-  }
-
+  const lower = inputString.toLowerCase()
+  if (lower.includes("merdeka")) return "KURMER"
+  if (lower.includes("kma")) return "KMA 143"
+  if (lower.includes("btq")) return "BTQ"
+  if (lower.includes("2013")) return "K13"
   return "UNKNOWN"
 }
 
@@ -198,35 +103,14 @@ export function getKurikulum(inputString: string): string {
  * @returns A formatted string with the type and number, or the original input string if no match is found.
  */
 export function getBab(inputString: string): string {
-  const regex = /\b(?:bab|chapter|subtema|wulangan|unit)\s+(\d+)/i
-
-  const match = inputString.toLowerCase().match(regex)
-
-  if (!match) {
-    return inputString
-  }
-
-  const type = inputString.toLowerCase().includes("subtema") ? "SUBTEMA" : "BAB"
-
-  return `${type} ${match[1]}`
+  const match = inputString.toLowerCase().match(/\b(bab|chapter|subtema|wulangan|unit)\s+(\d+)/i)
+  return match ? `BAB ${match[2]}` : inputString
 }
 
 export function getSubBab(inputString: string): string {
-  const regex = /[A-Z]\./
-
-  if (inputString.includes("AKM")) {
-    return "AKM"
-  } else if (inputString.includes("P3")) {
-    return "P3"
-  }
-
-  const match = inputString.toUpperCase().match(regex)
-
-  if (!match) {
-    return inputString
-  }
-
-  return `SUBBAB ${match[0].replace(".", "")}`
+  if (/AKM|P3/.test(inputString)) return inputString
+  const match = inputString.toUpperCase().match(/[A-Z]\./)
+  return match ? `SUBBAB ${match[0].replace(".", "")}` : inputString
 }
 
 /**
@@ -345,7 +229,8 @@ export async function generateImage(
   format: string,
   detail: string,
   name: string,
-  watermark = true
+  watermark = true,
+  preview = false
 ) {
   try {
     const canvas = await generateQRCode(url, detail as QRCodeErrorCorrectionLevel)
@@ -357,7 +242,7 @@ export async function generateImage(
     return c.body(compressedBuffer, {
       headers: {
         "Content-Type": contentType,
-        "Content-Disposition": `inline; filename="${fileName}"`,
+        "Content-Disposition": `${preview ? 'inline' : 'attachment'}; filename="${fileName}"`,
       },
     })
   } catch (error) {
