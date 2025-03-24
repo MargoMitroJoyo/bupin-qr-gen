@@ -30,9 +30,7 @@ export const getQRImage = factory.createHandlers(
     if (!fileNameFromInfo) return c.text("QR code not found.", 404)
 
     const isPreview = preview ? (preview === "false" ? false : true) : true
-
-    console.log(preview, isPreview)
-
+    
     return generateImage(c, url, format, detail, fileNameFromInfo, true, isPreview)
   }
 )
