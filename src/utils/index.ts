@@ -237,7 +237,8 @@ export async function generateImage(
     if (watermark) addTextOverlay(canvas)
     const compressedBuffer = await compressImage(canvas, format)
     const contentType = format === "jpeg" ? "image/jpeg" : "image/png"
-    const fileName = `${name}.${format === "jpeg" ? "jpg" : "png"}`
+    const sanitizedName = name.replace(/â€™|’/g, "'")
+    const fileName = `${sanitizedName}.${format === "jpeg" ? "jpg" : "png"}`
 
     return c.body(compressedBuffer, {
       headers: {
@@ -245,8 +246,11 @@ export async function generateImage(
         "Content-Disposition": `${preview ? 'inline' : 'attachment'}; filename="${fileName}"`,
       },
     })
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error generating QR code:", error)
-    return c.text("Failed to generate QR code.", 500)
+    return c.json({
+      message: "Failed to generate QR code",
+      error: error.message,
+    }, 500)
   }
 }
