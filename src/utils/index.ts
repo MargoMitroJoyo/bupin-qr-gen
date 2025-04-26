@@ -90,8 +90,8 @@ export function getJenjangKelas(inputString: string): string {
 export function getKurikulum(inputString: string): string {
   const lower = inputString.toLowerCase()
   if (lower.includes("merdeka")) return "KURMER"
-  if (lower.includes("kma-347")) return "KMA-347"
-  if (lower.includes("kma-183")) return "KMA-183"
+  if (lower.includes("kma 347")) return "KMA-347"
+  if (lower.includes("kma 183")) return "KMA-183"
   if (lower.includes("kma")) return "KMA"
   if (lower.includes("btq")) return "BTQ"
   if (lower.includes("2013")) return "K13"
