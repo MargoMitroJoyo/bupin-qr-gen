@@ -239,7 +239,7 @@ export async function generateImage(
     if (watermark) addTextOverlay(canvas)
     const compressedBuffer = await compressImage(canvas, format)
     const contentType = format === "jpeg" ? "image/jpeg" : "image/png"
-    const sanitizedName = name.replace(/â€™|’/g, "'")
+    const sanitizedName = encodeURIComponent(name.trim().replace(/[^a-zA-Z0-9-_ ]/g, ""))
     const fileName = `${sanitizedName}.${format === "jpeg" ? "jpg" : "png"}`
 
     return c.body(compressedBuffer, {
