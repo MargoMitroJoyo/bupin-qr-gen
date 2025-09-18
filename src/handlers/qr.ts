@@ -12,6 +12,7 @@ const qrValidationSchema = {
   query: z.object({
     format: z.enum(["png", "jpeg", "avif"]).optional().default("png"),
     detail: z.enum(["low", "medium", "high"]).optional().default("high"),
+    watermark: z.enum(["true", "false"]).optional().default("true"),
     preview: z.enum(["true", "false"]).optional().default("false"),
   }),
 }
@@ -23,15 +24,17 @@ export const getQRImage = factory.createHandlers(
     const id = c.req.param("id")
     const format = c.req.query("format") || "png"
     const detail = c.req.query("detail") || "high"
+    const watermark = c.req.query("watermark")
     const url = `https://buku.bupin.id/?${id}`
     const preview = c.req.query("preview")
 
     const fileNameFromInfo = await getFileName(id as string)
     if (!fileNameFromInfo) return c.text("QR code not found.", 404)
 
+    const isWatermarked = watermark ? (watermark === "false" ? false : true) : true
     const isPreview = preview ? (preview === "false" ? false : true) : true
-    
-    return generateImage(c, url, format, detail, fileNameFromInfo, true, isPreview)
+
+    return generateImage(c, url, format, detail, fileNameFromInfo, isWatermarked, isPreview)
   }
 )
 
