@@ -2,6 +2,7 @@ import { createFactory } from "hono/factory"
 import { zValidator } from "@hono/zod-validator"
 import { z } from "zod"
 import { generateImage, getFileName } from "../utils"
+import { searchByISBN } from "../lib/bse"
 
 const factory = createFactory()
 
@@ -67,5 +68,42 @@ export const getUniversalQRImage = factory.createHandlers(
     const isPreview = preview ? (preview === "false" ? false : true) : true
 
     return generateImage(c, url, format, detail, name, isWatermarked, isPreview)
+  }
+)
+
+const bseQrValidationSchema = {
+  params: z.object({
+    isbn: z.string(),
+  }),
+  query: z.object({
+    format: z.enum(["png", "jpeg", "avif"]).optional().default("png"),
+    detail: z.enum(["low", "medium", "high"]).optional().default("high"),
+    filename: z.string().optional(),
+    watermark: z.enum(["true", "false"]).optional().default("true"),
+    preview: z.enum(["true", "false"]).optional().default("false"),
+  }),
+}
+
+export const getBseQRImage = factory.createHandlers(
+  zValidator("param", bseQrValidationSchema.params),
+  zValidator("query", bseQrValidationSchema.query),
+  async (c) => {
+    const isbn = c.req.param("isbn")
+    const book = searchByISBN(isbn as string)
+
+    if (!book) return c.json({ error: "Book not found" })
+
+    const format = c.req.query("format") || "png"
+    const detail = c.req.query("detail") || "high"
+    const filename =
+      c.req.query("filename") || `${book.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}_${isbn}`
+    const watermark = c.req.query("watermark")
+    const preview = c.req.query("preview")
+    const url = `${c.req.header("Host")}/api/r/bse/${isbn}`
+
+    const isWatermarked = watermark ? (watermark === "false" ? false : true) : false
+    const isPreview = preview ? (preview === "false" ? false : true) : true
+
+    return generateImage(c, url, format, detail, filename, isWatermarked, isPreview)
   }
 )
