@@ -99,7 +99,7 @@ export const getBseQRImage = factory.createHandlers(
       c.req.query("filename") || `${book.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}_${isbn}`
     const watermark = c.req.query("watermark")
     const preview = c.req.query("preview")
-    const url = `${c.req.header("Host")}/api/r/bse/${isbn}`
+    const url = `https://buku.bupin.id/redirect/bse.php/?isbn=${isbn}`
 
     const isWatermarked = watermark ? (watermark === "false" ? false : true) : false
     const isPreview = preview ? (preview === "false" ? false : true) : true
