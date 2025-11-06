@@ -20,6 +20,7 @@ COPY --from=builder /app/node_modules/.prisma/client/libquery_* /app/node_module
 COPY --from=builder /app/node_modules/@img/sharp-libvips-linux-x64/ /app/node_modules/@img/sharp-libvips-linux-x64/
 COPY --from=builder /app/node_modules/@img/sharp-linux-x64/ /app/node_modules/@img/sharp-linux-x64/
 COPY --from=builder /app/assets/ /app/assets/
+COPY --from=builder /app/data/ /app/data/
 COPY --from=builder /app/dist/ /app/
 
 ENTRYPOINT ["/app/main"]
