@@ -52,6 +52,8 @@ export function getBookDB(): Database {
 
 export function searchByISBN(isbn: string) {
   const db = getBookDB()
-  const result = db.query("SELECT * FROM books WHERE isbn = ? LIMIT 1").get(isbn)
+  const result = db
+    .query("SELECT * FROM books WHERE isbn LIKE ? LIMIT 1")
+    .get(`%${isbn}%`)
   return result ? (result as unknown as Book) : null
 }
