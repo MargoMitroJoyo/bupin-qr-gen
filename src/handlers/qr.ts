@@ -91,12 +91,14 @@ export const getBseQRImage = factory.createHandlers(
     const isbn = c.req.param("isbn")
     const book = searchByISBN(isbn as string)
 
-    if (!book) return c.json({ error: "Book not found" })
+    let filename = isbn as string
+
+    if (book)
+      filename =
+        c.req.query("filename") || `${book.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}_${isbn}`
 
     const format = c.req.query("format") || "png"
     const detail = c.req.query("detail") || "high"
-    const filename =
-      c.req.query("filename") || `${book.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}_${isbn}`
     const watermark = c.req.query("watermark")
     const preview = c.req.query("preview")
     const url = `https://buku.bupin.id/redirect/bse.php/?isbn=${isbn}`
