@@ -22,12 +22,12 @@ export const getQRImage = factory.createHandlers(
   zValidator("param", qrValidationSchema.params),
   zValidator("query", qrValidationSchema.query),
   async (c) => {
-    const id = c.req.param("id")
-    const format = c.req.query("format") || "png"
-    const detail = c.req.query("detail") || "high"
-    const watermark = c.req.query("watermark")
+    const id = c.req.valid("param").id
+    const format = c.req.valid("query").format || "png"
+    const detail = c.req.valid("query").detail || "high"
+    const watermark = c.req.valid("query").watermark
     const url = `https://buku.bupin.id/?${id}`
-    const preview = c.req.query("preview")
+    const preview = c.req.valid("query").preview
 
     const fileNameFromInfo = await getFileName(id as string)
     if (!fileNameFromInfo) return c.text("QR code not found.", 404)
@@ -56,12 +56,12 @@ export const getUniversalQRImage = factory.createHandlers(
   zValidator("param", universalQrValidationSchema.params),
   zValidator("query", universalQrValidationSchema.query),
   async (c) => {
-    const string = c.req.param("string") as string
-    const format = c.req.query("format") || "png"
-    const detail = c.req.query("detail") || "high"
-    const name = c.req.query("filename") || String(Bun.hash(string))
-    const watermark = c.req.query("watermark")
-    const preview = c.req.query("preview")
+    const string = c.req.valid("param").string
+    const format = c.req.valid("query").format || "png"
+    const detail = c.req.valid("query").detail || "high"
+    const name = c.req.valid("query").filename || String(Bun.hash(string))
+    const watermark = c.req.valid("query").watermark
+    const preview = c.req.valid("query").preview
     const url = String(string)
 
     const isWatermarked = watermark ? (watermark === "false" ? false : true) : true
@@ -88,19 +88,20 @@ export const getBseQRImage = factory.createHandlers(
   zValidator("param", bseQrValidationSchema.params),
   zValidator("query", bseQrValidationSchema.query),
   async (c) => {
-    const isbn = c.req.param("isbn")
+    const isbn = c.req.valid("param").isbn
     const book = searchByISBN(isbn as string)
 
-    let filename = isbn as string
+    let filename = isbn
 
     if (book)
       filename =
-        c.req.query("filename") || `${book.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}_${isbn}`
+        c.req.valid("query").filename ||
+        `${book.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}_${isbn}`
 
-    const format = c.req.query("format") || "png"
-    const detail = c.req.query("detail") || "high"
-    const watermark = c.req.query("watermark")
-    const preview = c.req.query("preview")
+    const format = c.req.valid("query").format || "png"
+    const detail = c.req.valid("query").detail || "high"
+    const watermark = c.req.valid("query").watermark
+    const preview = c.req.valid("query").preview
     const url = `https://buku.bupin.id/redirect/bse.php/?isbn=${isbn}`
 
     const isWatermarked = watermark ? (watermark === "false" ? false : true) : false
