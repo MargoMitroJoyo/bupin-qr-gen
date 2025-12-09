@@ -16,7 +16,6 @@ FROM gcr.io/distroless/cc-debian12 AS runtime
 
 WORKDIR /app
 
-COPY --from=builder /app/node_modules/.prisma/client/libquery_* /app/node_modules/.prisma/client/
 COPY --from=builder /app/assets/ /app/assets/
 COPY --from=builder /app/data/ /app/data/
 COPY --from=builder /app/dist/ /app/
