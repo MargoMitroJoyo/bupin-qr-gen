@@ -1,7 +1,7 @@
 import { Database } from "bun:sqlite"
 import { readFileSync } from "fs"
-import Papa from "papaparse"
 import { Book } from "../types"
+import { parse } from "papaparse"
 
 export let bse: Database
 
@@ -14,7 +14,7 @@ function detectType(value: string): string {
 
 function loadCSVIntoMemoryDB(csvPath: string): Database {
   const csv = readFileSync(csvPath, "utf8")
-  const parsed = Papa.parse(csv, { header: true, skipEmptyLines: true })
+  const parsed = parse(csv, { header: true, skipEmptyLines: true })
 
   const database = new Database(":memory:")
   const firstRow = parsed.data[0] as Record<string, string>
