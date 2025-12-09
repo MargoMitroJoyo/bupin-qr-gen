@@ -2,7 +2,6 @@ import { QRCodeErrorCorrectionLevel, toCanvas } from "qrcode"
 import { prisma } from "../lib/db"
 import { InfoUJN, InfoVID } from "../types"
 import { Canvas, createCanvas, GlobalFonts } from "@napi-rs/canvas"
-import sharp from "sharp"
 import { Context } from "hono"
 
 /**
@@ -207,10 +206,11 @@ export function addTextOverlay(canvas: Canvas) {
  * @returns A promise that resolves to a Buffer containing the compressed image data.
  */
 export async function compressImage(canvas: Canvas, format: string): Promise<Buffer> {
-  const buffer = canvas.toBuffer("image/png")
-  return sharp(buffer)
-    .toFormat(format as keyof sharp.FormatEnum, { quality: 80 })
-    .toBuffer()
+  if (format === "jpeg" || format === "jpg") {
+    return canvas.encode("jpeg", 80);
+  }
+
+  return canvas.encode("png");
 }
 
 /**
@@ -242,6 +242,7 @@ export async function generateImage(
     const sanitizedName = encodeURIComponent(name.trim())
     const fileName = `${sanitizedName}.${format === "jpeg" ? "jpg" : "png"}`
 
+    // @ts-ignore
     return c.body(compressedBuffer, {
       headers: {
         "Content-Type": contentType,

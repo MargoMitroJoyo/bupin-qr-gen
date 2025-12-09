@@ -79,8 +79,8 @@ const bseQrValidationSchema = {
     format: z.enum(["png", "jpeg", "avif"]).optional().default("png"),
     detail: z.enum(["low", "medium", "high"]).optional().default("high"),
     filename: z.string().optional(),
-    watermark: z.enum(["true", "false"]).optional().default("true"),
-    preview: z.enum(["true", "false"]).optional().default("false"),
+    watermark: z.enum(["true", "false"]).optional().default("false"),
+    preview: z.enum(["true", "false"]).optional().default("true"),
   }),
 }
 
@@ -102,7 +102,7 @@ export const getBseQRImage = factory.createHandlers(
     const url = `https://buku.bupin.id/redirect/bse.php/?isbn=${isbn}`
 
     const isWatermarked = watermark ? (watermark === "false" ? false : true) : false
-    const isPreview = preview ? (preview === "false" ? false : true) : true
+    const isPreview = preview ? (preview === "false" ? false : true) : false
 
     return generateImage(c, url, format, detail, filename, isWatermarked, isPreview)
   }
