@@ -89,7 +89,7 @@ export function getJenjangKelas(inputString: string): string {
 export function getKurikulum(inputString: string): string {
   const lower = inputString.toLowerCase()
   const kmaMatch = lower.match(/kma\s*(\d+)/)
-  
+
   if (lower.includes("merdeka")) return "KURMER"
   if (kmaMatch) return `KMA-${kmaMatch[1]}`
   if (lower.includes("btq")) return "BTQ"
@@ -205,12 +205,12 @@ export function addTextOverlay(canvas: Canvas) {
  *
  * @returns A promise that resolves to a Buffer containing the compressed image data.
  */
-export async function compressImage(canvas: Canvas, format: string): Promise<Buffer> {
+export async function compressImage(canvas: Canvas, format: string): Promise<Uint8Array> {
   if (format === "jpeg" || format === "jpg") {
-    return canvas.encode("jpeg", 80);
+    return canvas.encode("jpeg", 80)
   }
 
-  return canvas.encode("png");
+  return canvas.encode("png")
 }
 
 /**
@@ -229,31 +229,33 @@ export async function generateImage(
   c: Context,
   url: string,
   format: string,
-  detail: string,
+  detail: QRCodeErrorCorrectionLevel,
   name: string,
   watermark = true,
   preview = false
 ) {
   try {
-    const canvas = await generateQRCode(url, detail as QRCodeErrorCorrectionLevel)
+    const canvas = await generateQRCode(url, detail)
     if (watermark) addTextOverlay(canvas)
     const compressedBuffer = await compressImage(canvas, format)
     const contentType = format === "jpeg" ? "image/jpeg" : "image/png"
     const sanitizedName = encodeURIComponent(name.trim())
     const fileName = `${sanitizedName}.${format === "jpeg" ? "jpg" : "png"}`
 
-    // @ts-ignore
-    return c.body(compressedBuffer, {
+    return c.body(new Uint8Array(compressedBuffer), {
       headers: {
         "Content-Type": contentType,
-        "Content-Disposition": `${preview ? 'inline' : 'attachment'}; filename="${fileName}"`,
+        "Content-Disposition": `${preview ? "inline" : "attachment"}; filename="${fileName}"`,
       },
     })
   } catch (error: any) {
     console.error("Error generating QR code:", error)
-    return c.json({
-      message: "Failed to generate QR code",
-      error: error.message,
-    }, 500)
+    return c.json(
+      {
+        message: "Failed to generate QR code",
+        error: error.message,
+      },
+      500
+    )
   }
 }
