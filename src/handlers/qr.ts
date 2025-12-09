@@ -90,13 +90,10 @@ export const getBseQRImage = factory.createHandlers(
   async (c) => {
     const isbn = c.req.valid("param").isbn
     const book = searchByISBN(isbn as string)
+    
+    let filename = c.req.valid("query").filename || isbn
 
-    let filename = isbn
-
-    if (book)
-      filename =
-        c.req.valid("query").filename ||
-        `${book.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}_${isbn}`
+    if (book) filename = `${book.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}_${isbn}`
 
     const format = c.req.valid("query").format || "png"
     const detail = c.req.valid("query").detail || "high"
