@@ -1,11 +1,11 @@
 generator client {
-  provider = "prisma-client-js"
-  binaryTargets = ["native", "debian-openssl-3.0.x"]
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -623,6 +623,11 @@ model qrujian {
   status      Int
   tp          String  @db.VarChar(30)
   referensi   String? @db.VarChar(255)
+
+  @@index([idJenjang])
+  @@index([idKelas])
+  @@index([idMapel])
+  @@index([idBab])
 }
 
 model qrvap {
@@ -652,6 +657,7 @@ model qrvap {
   @@index([idMapel], map: "idx_qrvap_idMapel")
   @@index([idSubBab], map: "idx_qrvap_idSubBab")
   @@index([kodeQR(length: 768)], map: "idx_qrvap_kodeQR")
+  @@index([idJenjang])
 }
 
 model savsoft_options {
